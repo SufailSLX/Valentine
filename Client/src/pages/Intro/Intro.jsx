@@ -210,13 +210,12 @@ const Intro = () => {
           .made-by {
             position: absolute;
             bottom: 15px;
-            width: 100%;
-            text-align: center;
+            right: 20px;
             font-family: 'Montserrat', sans-serif;
             font-size: 0.9rem;
-            color: #D81B60;
             z-index: 60;
             opacity: 0.7;
+            transition: color 0.5s ease;
           }
           .made-by a {
             color: inherit;
@@ -327,7 +326,16 @@ const Intro = () => {
             ))}
 
             {/* 6. Made By Footer */}
-            <div className="made-by" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+            {/* 6. Made By Footer */}
+            <div
+                className="made-by"
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    color: accepted ? 'rgba(255, 255, 255, 0.5)' : '#D81B60'
+                }}
+            >
                 Made BY <a href="https://github.com/SufailSLX" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center' }}>
                     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor">
                         <title>GitHub</title>
