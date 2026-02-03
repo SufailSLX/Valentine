@@ -82,7 +82,7 @@ const Loader = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 1 }}
                 >
-                    LOADING
+                    Holding this moment gently for you…
                 </motion.p>
             </motion.div>
         </div>
