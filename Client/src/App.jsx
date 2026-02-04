@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Loader from './components/Loader'
+import Cursor from './components/Cursor'
 import Intro from './pages/Intro/Intro'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -16,6 +17,7 @@ function App() {
 
   return (
     <div className="bg-black min-h-screen">
+      <Cursor />
       <AnimatePresence mode="wait">
         {loading && <Loader key="loader" />}
       </AnimatePresence>
