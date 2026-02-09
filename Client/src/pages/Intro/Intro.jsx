@@ -6,9 +6,10 @@ const Intro = () => {
     const [accepted, setAccepted] = useState(false);
     const [noBtnPos, setNoBtnPos] = useState({ x: 0, y: 0 });
     const [hearts, setHearts] = useState([]);
+    const [butterflies, setButterflies] = useState([]);
     const yesControls = useAnimation();
 
-    // Generate background hearts
+    // Generate background hearts and butterflies
     useEffect(() => {
         const newHearts = Array.from({ length: 30 }).map((_, i) => ({
             id: i,
@@ -18,6 +19,15 @@ const Intro = () => {
             size: Math.random() * 20 + 10,
         }));
         setHearts(newHearts);
+
+        const newButterflies = Array.from({ length: 15 }).map((_, i) => ({
+            id: i,
+            left: Math.random() * 100,
+            delay: Math.random() * 5,
+            duration: 6 + Math.random() * 6, // Slower duration
+            size: Math.random() * 15 + 15,
+        }));
+        setButterflies(newButterflies);
     }, []);
 
     const moveNoButton = () => {
@@ -42,7 +52,7 @@ const Intro = () => {
             {/* Background Floating Hearts */}
             {hearts.map((heart) => (
                 <motion.div
-                    key={heart.id}
+                    key={`heart-${heart.id}`}
                     className="absolute text-pink-200 pointer-events-none select-none"
                     initial={{ y: '110vh', opacity: 0 }}
                     animate={{ y: '-10vh', opacity: 0.8 }}
@@ -58,6 +68,32 @@ const Intro = () => {
                     }}
                 >
                     ❤️
+                </motion.div>
+            ))}
+
+            {/* Background Floating Butterflies */}
+            {butterflies.map((butterfly) => (
+                <motion.div
+                    key={`butterfly-${butterfly.id}`}
+                    className="absolute pointer-events-none select-none"
+                    initial={{ y: '110vh', opacity: 0 }}
+                    animate={{
+                        y: '-10vh',
+                        opacity: [0, 1, 0],
+                        x: [0, 20, -20, 0] // Zig-zag motion
+                    }}
+                    transition={{
+                        duration: butterfly.duration,
+                        repeat: Infinity,
+                        delay: butterfly.delay,
+                        ease: 'linear',
+                    }}
+                    style={{
+                        left: `${butterfly.left}%`,
+                        fontSize: `${butterfly.size}px`,
+                    }}
+                >
+                    🦋
                 </motion.div>
             ))}
 
