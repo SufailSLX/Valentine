@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 
 const Outtro = () => {
     const [hearts, setHearts] = useState([]);
+    const [sparkles, setSparkles] = useState([]);
 
     // Generate floating hearts for background effect
     useEffect(() => {
@@ -14,12 +15,48 @@ const Outtro = () => {
                 duration: 4 + Math.random() * 4, // Random duration
             }));
             setHearts(newHearts);
+
+            // Generate falling sparkles
+            const newSparkles = Array.from({ length: 15 }).map((_, i) => ({
+                id: i,
+                left: Math.random() * 100,
+                delay: Math.random() * 2,
+                duration: 3 + Math.random() * 3,
+                emoji: Math.random() > 0.5 ? "💕" : "💋"
+            }));
+            setSparkles(newSparkles);
         };
         generateHearts();
     }, []);
 
     return (
-        <div className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-gradient-to-br from-[#ff7eb3] via-[#ff758c] to-[#ff7eb3] overflow-hidden">
+        <div className="fixed inset-0 flex flex-col items-center justify-center z-50 bg-[#eec0c2] overflow-hidden">
+            {/* Background Falling Sparkles */}
+            {sparkles.map((sparkle) => (
+                <motion.div
+                    key={`sparkle-${sparkle.id}`}
+                    initial={{ y: '-10vh', opacity: 0 }}
+                    animate={{
+                        y: '110vh',
+                        opacity: [0, 1, 0],
+                        rotate: [0, 360]
+                    }}
+                    transition={{
+                        duration: sparkle.duration,
+                        delay: sparkle.delay,
+                        ease: 'linear',
+                    }}
+                    style={{
+                        left: `${sparkle.left}%`,
+                        position: 'absolute',
+                        fontSize: `${Math.random() * 2 + 1.5}rem`,
+                    }}
+                    className="pointer-events-none z-0"
+                >
+                    {sparkle.emoji}
+                </motion.div>
+            ))}
+
             {/* Background Floating Hearts */}
             {hearts.map((heart) => (
                 <motion.div
@@ -54,14 +91,14 @@ const Outtro = () => {
                 className="relative z-10 flex flex-col items-center"
             >
                 {/* GIF Container with Glassmorphism */}
-                <div className="bg-white/20 backdrop-blur-lg rounded-3xl p-8 shadow-2xl mb-8 transform hover:scale-105 transition-transform duration-300">
+                <div className="mb-8">
                     <motion.img
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
                         src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif"
                         alt="Bear Kiss"
-                        className="w-64 h-64 object-cover rounded-2xl shadow-lg"
+                        className="w-64 h-64 object-cover"
                     />
                 </div>
 

@@ -24,15 +24,21 @@ const Intro = () => {
             id: i,
             left: Math.random() * 100,
             delay: Math.random() * 5,
-            duration: 6 + Math.random() * 6, // Slower duration
+            duration: 6 + Math.random() * 6,
             size: Math.random() * 15 + 15,
         }));
         setButterflies(newButterflies);
     }, []);
 
     const moveNoButton = () => {
-        const x = Math.random() * 500 - 250;
-        const y = Math.random() * 500 - 250;
+        // Dynamic constraints based on viewport
+        const isMobile = window.innerWidth < 768;
+        const maxX = isMobile ? 80 : 200; // Constrain horizontal
+        const maxY = isMobile ? -200 : -350; // Constrain vertical (upward only)
+
+        const x = Math.random() * (maxX * 2) - maxX; // -maxX to +maxX
+        const y = Math.random() * maxY; // 0 to maxY (negative values)
+
         setNoBtnPos({ x, y });
 
         // Blink/Pulse the YES button
@@ -97,6 +103,8 @@ const Intro = () => {
                 </motion.div>
             ))}
 
+
+
             <AnimatePresence>
                 {!accepted && (
                     <motion.div
@@ -134,9 +142,10 @@ const Intro = () => {
 
                                 <motion.button
                                     animate={{ x: noBtnPos.x, y: noBtnPos.y }}
-                                    transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                                    transition={{ type: 'spring', stiffness: 600, damping: 10, mass: 0.8 }}
                                     onMouseEnter={moveNoButton}
                                     onTouchStart={moveNoButton}
+                                    onClick={moveNoButton}
                                     className="bg-white text-pink-500 border-2 border-pink-500 text-xl md:text-2xl px-10 py-3 rounded-full font-bold shadow-lg cursor-pointer whitespace-nowrap"
                                 >
                                     NO
@@ -146,8 +155,6 @@ const Intro = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-
-
 
             {/* Outtro Overlay */}
             {accepted && <Outtro />}
