@@ -76,7 +76,7 @@ const Outtro = () => {
                         Yay!
                     </h1>
                     <p className="font-['Montserrat'] text-white text-2xl md:text-4xl font-bold tracking-wider drop-shadow-md">
-                        You're my Valentine! <span className="text-red-500 inline-block animate-pulse">❤️</span>
+                        You're my Valentine, Beaabb!<span className="text-red-500 inline-block animate-pulse">💗</span>
                     </p>
                 </motion.div>
             </motion.div>

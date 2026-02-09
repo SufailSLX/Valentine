@@ -20,8 +20,8 @@ const Intro = () => {
     }, []);
 
     const moveNoButton = () => {
-        const x = Math.random() * 200 - 100;
-        const y = Math.random() * 200 - 100;
+        const x = Math.random() * 500 - 250;
+        const y = Math.random() * 500 - 250;
         setNoBtnPos({ x, y });
     };
 
@@ -76,7 +76,7 @@ const Intro = () => {
 
                                 <motion.button
                                     animate={{ x: noBtnPos.x, y: noBtnPos.y }}
-                                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                                    transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                                     onMouseEnter={moveNoButton}
                                     onTouchStart={moveNoButton}
                                     className="bg-white text-pink-500 border-2 border-pink-500 text-xl md:text-2xl px-10 py-3 rounded-full font-bold shadow-lg cursor-pointer whitespace-nowrap"

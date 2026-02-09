@@ -18,7 +18,7 @@ const Cursor = () => {
 
     return (
         <motion.div
-            className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-[9999] flex items-center justify-center"
+            className="hidden md:flex fixed top-0 left-0 w-8 h-8 pointer-events-none z-[9999] items-center justify-center"
             animate={{ x: mousePosition.x - 16, y: mousePosition.y - 16 }}
             transition={{ type: "spring", stiffness: 500, damping: 28 }}
         >
