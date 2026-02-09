@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import Outtro from './outtro';
 
 const Intro = () => {
     const [accepted, setAccepted] = useState(false);
     const [noBtnPos, setNoBtnPos] = useState({ x: 0, y: 0 });
     const [hearts, setHearts] = useState([]);
+    const yesControls = useAnimation();
 
     // Generate background hearts
     useEffect(() => {
@@ -23,6 +24,17 @@ const Intro = () => {
         const x = Math.random() * 500 - 250;
         const y = Math.random() * 500 - 250;
         setNoBtnPos({ x, y });
+
+        // Blink/Pulse the YES button
+        yesControls.start({
+            scale: [1, 1.2, 1],
+            boxShadow: [
+                "0px 0px 0px rgba(0,0,0,0)",
+                "0px 0px 30px rgba(236,72,153,0.8)",
+                "0px 0px 0px rgba(0,0,0,0)"
+            ],
+            transition: { duration: 0.4 }
+        });
     };
 
     return (
@@ -64,8 +76,18 @@ const Intro = () => {
                                 Will you be my Valentine?
                             </h1>
 
+                            <motion.img
+                                src="https://i.pinimg.com/originals/2a/a3/77/2aa37795ea614c617e49fd013ddad335.jpg"
+                                alt="Cute Valentine Bear"
+                                className="w-40 h-40 md:w-56 md:h-56 object-cover mx-auto"
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                            />
+
                             <div className="flex gap-8 justify-center items-center mt-8 md:mt-12 h-20">
                                 <motion.button
+                                    animate={yesControls}
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => setAccepted(true)}
