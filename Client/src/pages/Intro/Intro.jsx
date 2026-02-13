@@ -113,7 +113,10 @@ const Intro = () => {
     };
 
     return (
-        <div className="min-h-screen bg-pink-50 flex flex-col items-center justify-center relative overflow-hidden font-['Montserrat']">
+        <div
+            className="min-h-screen bg-pink-50 flex flex-col items-center justify-center relative overflow-hidden font-['Montserrat'] select-none"
+            onContextMenu={(e) => e.preventDefault()}
+        >
             {/* Background Floating Hearts */}
             {hearts.map((heart) => (
                 <motion.div
@@ -201,7 +204,8 @@ const Intro = () => {
                                     onClick={() => {
                                         if (!yesSuccessRef.current) triggerHoldTip();
                                     }}
-                                    className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xl md:text-2xl px-10 py-3 rounded-full font-bold shadow-lg transition-all duration-300 relative overflow-hidden"
+                                    className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xl md:text-2xl px-10 py-3 rounded-full font-bold shadow-lg transition-all duration-300 relative overflow-hidden touch-none select-none"
+                                    style={{ WebkitTouchCallout: 'none' }}
                                 >
                                     <motion.div
                                         className="absolute inset-0 bg-white/30 origin-left"
@@ -223,7 +227,8 @@ const Intro = () => {
                                     onClick={() => {
                                         if (!noSuccessRef.current) triggerHoldTip();
                                     }}
-                                    className="bg-white text-pink-500 border-2 border-pink-500 text-xl md:text-2xl px-10 py-3 rounded-full font-bold shadow-lg cursor-pointer whitespace-nowrap relative overflow-hidden"
+                                    className="bg-white text-pink-500 border-2 border-pink-500 text-xl md:text-2xl px-10 py-3 rounded-full font-bold shadow-lg cursor-pointer whitespace-nowrap relative overflow-hidden touch-none select-none"
+                                    style={{ WebkitTouchCallout: 'none' }}
                                 >
                                     <motion.div
                                         className="absolute inset-0 bg-pink-100 origin-left"
