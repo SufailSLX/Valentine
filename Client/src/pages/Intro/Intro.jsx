@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import Outtro from './outtro';
 
@@ -52,6 +52,14 @@ const Intro = () => {
         setButterflies(newButterflies);
     }, []);
 
+    // Memoize button hearts to prevent jitter on re-renders
+    const buttonHearts = useMemo(() => Array.from({ length: 40 }).map((_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        delay: Math.random() * 2,
+        duration: 2 + Math.random() * 2
+    })), []);
+
     const moveNoButton = () => {
         // Dynamic constraints based on viewport
         const isMobile = window.innerWidth < 768;
@@ -94,14 +102,14 @@ const Intro = () => {
         }
     };
 
-    // No Button Handlers (Hold 2s)
+    // No Button Handlers (Run away before fill)
     const handleNoStart = () => {
         noSuccessRef.current = false;
         setHoldingNo(true);
+        // Move button quickly (e.g. 0.3s) so it runs away before filling
         noTimerRef.current = setTimeout(() => {
-            noSuccessRef.current = true;
             moveNoButton();
-        }, 2000);
+        }, 300);
     };
 
     const handleNoEnd = () => {
@@ -207,12 +215,37 @@ const Intro = () => {
                                     className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xl md:text-2xl px-10 py-3 rounded-full font-bold shadow-lg transition-all duration-300 relative overflow-hidden touch-none select-none"
                                     style={{ WebkitTouchCallout: 'none' }}
                                 >
+                                    {/* Moving Hearts Progress Bar */}
                                     <motion.div
-                                        className="absolute inset-0 bg-white/30 origin-left"
-                                        initial={{ scaleX: 0 }}
-                                        animate={{ scaleX: holdingYes ? 1 : 0 }}
-                                        transition={{ duration: holdingYes ? 3 : 0.3, ease: 'linear' }}
-                                    />
+                                        className="absolute inset-0 overflow-hidden"
+                                        initial={{ width: "0%" }}
+                                        animate={{ width: holdingYes ? "100%" : "0%" }}
+                                        transition={{ duration: holdingYes ? 3 : 0.3, ease: "linear" }}
+                                    >
+                                        {/* Rising Hearts "Liquid" Effect from Bottom */}
+                                        <div className="absolute inset-0 bg-rose-500/40" />
+                                        {buttonHearts.map((heart) => (
+                                            <motion.div
+                                                key={heart.id}
+                                                className="absolute text-xs"
+                                                initial={{ y: "200%", opacity: 0 }}
+                                                animate={{
+                                                    y: "-50%",
+                                                    opacity: [0, 1, 0, 0],
+                                                    x: [0, 15, -15, 0] // Swaying motion
+                                                }}
+                                                transition={{
+                                                    repeat: Infinity,
+                                                    duration: heart.duration,
+                                                    delay: heart.delay,
+                                                    ease: "linear"
+                                                }}
+                                                style={{ left: `${heart.left}%` }}
+                                            >
+                                                ❤️
+                                            </motion.div>
+                                        ))}
+                                    </motion.div>
                                     <span className="relative z-10">YES</span>
                                 </motion.button>
 
