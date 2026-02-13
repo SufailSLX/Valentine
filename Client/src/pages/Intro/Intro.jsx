@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import Outtro from './outtro';
 
@@ -8,6 +8,28 @@ const Intro = () => {
     const [hearts, setHearts] = useState([]);
     const [butterflies, setButterflies] = useState([]);
     const yesControls = useAnimation();
+
+    // Timer refs for hold interactions
+    const yesTimerRef = useRef(null);
+    const noTimerRef = useRef(null);
+
+    // Refs to track if the hold action was successful
+    const yesSuccessRef = useRef(false);
+    const noSuccessRef = useRef(false);
+
+    // State for hold animation
+    const [holdingYes, setHoldingYes] = useState(false);
+    const [holdingNo, setHoldingNo] = useState(false);
+
+    // Tip state
+    const [showHoldTip, setShowHoldTip] = useState(false);
+    const tipTimeoutRef = useRef(null);
+
+    const triggerHoldTip = () => {
+        setShowHoldTip(true);
+        if (tipTimeoutRef.current) clearTimeout(tipTimeoutRef.current);
+        tipTimeoutRef.current = setTimeout(() => setShowHoldTip(false), 2000);
+    };
 
     // Generate background hearts and butterflies
     useEffect(() => {
@@ -40,6 +62,7 @@ const Intro = () => {
         const y = Math.random() * maxY; // 0 to maxY (negative values)
 
         setNoBtnPos({ x, y });
+        setHoldingNo(false);
 
         // Blink/Pulse the YES button
         yesControls.start({
@@ -51,6 +74,42 @@ const Intro = () => {
             ],
             transition: { duration: 0.4 }
         });
+    };
+
+    // Yes Button Handlers (Hold 3s)
+    const handleYesStart = () => {
+        yesSuccessRef.current = false;
+        setHoldingYes(true);
+        yesTimerRef.current = setTimeout(() => {
+            yesSuccessRef.current = true;
+            setAccepted(true);
+        }, 3000);
+    };
+
+    const handleYesEnd = () => {
+        setHoldingYes(false);
+        if (yesTimerRef.current) {
+            clearTimeout(yesTimerRef.current);
+            yesTimerRef.current = null;
+        }
+    };
+
+    // No Button Handlers (Hold 2s)
+    const handleNoStart = () => {
+        noSuccessRef.current = false;
+        setHoldingNo(true);
+        noTimerRef.current = setTimeout(() => {
+            noSuccessRef.current = true;
+            moveNoButton();
+        }, 2000);
+    };
+
+    const handleNoEnd = () => {
+        setHoldingNo(false);
+        if (noTimerRef.current) {
+            clearTimeout(noTimerRef.current);
+            noTimerRef.current = null;
+        }
     };
 
     return (
@@ -134,23 +193,62 @@ const Intro = () => {
                                     animate={yesControls}
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.95 }}
-                                    onClick={() => setAccepted(true)}
-                                    className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xl md:text-2xl px-10 py-3 rounded-full font-bold shadow-lg transition-all duration-300"
+                                    onMouseDown={handleYesStart}
+                                    onMouseUp={handleYesEnd}
+                                    onMouseLeave={handleYesEnd}
+                                    onTouchStart={handleYesStart}
+                                    onTouchEnd={handleYesEnd}
+                                    onClick={() => {
+                                        if (!yesSuccessRef.current) triggerHoldTip();
+                                    }}
+                                    className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xl md:text-2xl px-10 py-3 rounded-full font-bold shadow-lg transition-all duration-300 relative overflow-hidden"
                                 >
-                                    YES
+                                    <motion.div
+                                        className="absolute inset-0 bg-white/30 origin-left"
+                                        initial={{ scaleX: 0 }}
+                                        animate={{ scaleX: holdingYes ? 1 : 0 }}
+                                        transition={{ duration: holdingYes ? 3 : 0.3, ease: 'linear' }}
+                                    />
+                                    <span className="relative z-10">YES</span>
                                 </motion.button>
 
                                 <motion.button
                                     animate={{ x: noBtnPos.x, y: noBtnPos.y }}
                                     transition={{ type: 'spring', stiffness: 600, damping: 10, mass: 0.8 }}
-                                    onMouseEnter={moveNoButton}
-                                    onTouchStart={moveNoButton}
-                                    onClick={moveNoButton}
-                                    className="bg-white text-pink-500 border-2 border-pink-500 text-xl md:text-2xl px-10 py-3 rounded-full font-bold shadow-lg cursor-pointer whitespace-nowrap"
+                                    onMouseDown={handleNoStart}
+                                    onMouseUp={handleNoEnd}
+                                    onMouseLeave={handleNoEnd}
+                                    onTouchStart={handleNoStart}
+                                    onTouchEnd={handleNoEnd}
+                                    onClick={() => {
+                                        if (!noSuccessRef.current) triggerHoldTip();
+                                    }}
+                                    className="bg-white text-pink-500 border-2 border-pink-500 text-xl md:text-2xl px-10 py-3 rounded-full font-bold shadow-lg cursor-pointer whitespace-nowrap relative overflow-hidden"
                                 >
-                                    NO
+                                    <motion.div
+                                        className="absolute inset-0 bg-pink-100 origin-left"
+                                        initial={{ scaleX: 0 }}
+                                        animate={{ scaleX: holdingNo ? 1 : 0 }}
+                                        transition={{ duration: holdingNo ? 2 : 0.3, ease: 'linear' }}
+                                    />
+                                    <span className="relative z-10">NO</span>
                                 </motion.button>
                             </div>
+
+                            <AnimatePresence>
+                                {showHoldTip && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <p className="text-rose-600 font-bold mt-4 text-xl drop-shadow-sm">
+                                            Press and hold! 💕
+                                        </p>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     </motion.div>
                 )}
